@@ -1,0 +1,49 @@
+﻿<Window x:Class="PopovCourses.LoginRegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PopovCourses"
+        mc:Ignorable="d"
+        Title="LoginRegisterWindow" Height="450" Width="800">
+    <Grid>
+        <TabControl Name="TabControl">
+            <!-- Вкладка Вход -->
+            <TabItem Header="Вход">
+                <StackPanel Margin="20">
+                    <TextBlock Text="Логин" Margin="0,10"/>
+                    <TextBox Name="LoginTextBox" Margin="0,5" Padding="5"/>
+                    <TextBlock Text="Пароль" Margin="0,10"/>
+                    <PasswordBox Name="PasswordBox" Margin="0,5" Padding="5"/>
+                    <Button Name="LoginButton" Content="Войти" Margin="0,20" Background="#00ffc5" Foreground="#002217" Click="LoginButton_Click"/>
+                    <TextBlock HorizontalAlignment="Center">
+                        <Hyperlink Click="SwitchToRegistration">Нет аккаунта? Зарегистрироваться</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Вкладка Регистрация -->
+            <TabItem Header="Регистрация">
+                <StackPanel Margin="20">
+                    <TextBlock Text="ФИО" Margin="0,10"/>
+                    <TextBox Name="FullNameTextBox" Margin="0,5" Padding="5"/>
+                    <TextBlock Text="Дата рождения" Margin="0,10"/>
+                    <DatePicker Name="BirthDatePicker" Margin="0,5"/>
+                    <TextBlock Text="Пол" Margin="0,10"/>
+                    <ComboBox Name="GenderComboBox">
+                        <ComboBoxItem Content="Мужской"/>
+                        <ComboBoxItem Content="Женский"/>
+                    </ComboBox>
+                    <TextBlock Text="Логин" Margin="0,10"/>
+                    <TextBox Name="RegisterLoginTextBox" Margin="0,5" Padding="5"/>
+                    <TextBlock Text="Пароль" Margin="0,10"/>
+                    <PasswordBox Name="RegisterPasswordBox" Margin="0,5" Padding="5"/>
+                    <Button Name="RegisterButton" Content="Зарегистрироваться" Margin="0,20" Background="#00ffc5" Foreground="#002217" Click="RegisterButton_Click"/>
+                    <TextBlock HorizontalAlignment="Center">
+                        <Hyperlink Click="SwitchToLogin">Есть аккаунт? Войти</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
