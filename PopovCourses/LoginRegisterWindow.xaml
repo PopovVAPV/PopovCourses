@@ -5,16 +5,80 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PopovCourses"
         mc:Ignorable="d"
-        Title="LoginRegisterWindow" Height="450" Width="800">
+        Title="LoginRegisterWindow" Height="500" Width="800"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="800" MinHeight="600">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#00ffc5"/>
+            <Setter Property="Foreground" Value="#002217"/>
+            <Setter Property="FontFamily" Value="{StaticResource ComfortaaFont}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="BorderBrush" Value="#bdff71"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#727976" Direction="270" BlurRadius="8" ShadowDepth="3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style TargetType="PasswordBox">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="#00ffc5"/>
+            <Setter Property="Foreground" Value="#002217"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="{StaticResource ComfortaaFont}"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="BorderBrush" Value="#bdff71"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+
+    </Window.Resources>
+
     <Grid>
         <TabControl Name="TabControl">
-            <!-- Вкладка Вход -->
             <TabItem Header="Вход">
                 <StackPanel Margin="20">
                     <TextBlock Text="Логин" Margin="0,10"/>
-                    <TextBox Name="LoginTextBox" Margin="0,5" Padding="5"/>
+                    <Border BorderBrush="Transparent" BorderThickness="0" CornerRadius="25">
+                        <TextBox Name="LoginTextBox" Margin="0,5" Padding="10"/>
+                    </Border>
                     <TextBlock Text="Пароль" Margin="0,10"/>
-                    <PasswordBox Name="PasswordBox" Margin="0,5" Padding="5"/>
+                    <Border BorderBrush="Transparent" BorderThickness="0" CornerRadius="25">
+                        <PasswordBox Name="PasswordBox" Margin="0,5" Padding="10"/>
+                    </Border>
                     <Button Name="LoginButton" Content="Войти" Margin="0,20" Background="#00ffc5" Foreground="#002217" Click="LoginButton_Click"/>
                     <TextBlock HorizontalAlignment="Center">
                         <Hyperlink Click="SwitchToRegistration">Нет аккаунта? Зарегистрироваться</Hyperlink>
@@ -22,11 +86,12 @@
                 </StackPanel>
             </TabItem>
 
-            <!-- Вкладка Регистрация -->
             <TabItem Header="Регистрация">
                 <StackPanel Margin="20">
                     <TextBlock Text="ФИО" Margin="0,10"/>
-                    <TextBox Name="FullNameTextBox" Margin="0,5" Padding="5"/>
+                    <Border BorderBrush="Transparent" BorderThickness="0" CornerRadius="25">
+                        <TextBox Name="FullNameTextBox" Margin="0,5" Padding="10"/>
+                    </Border>
                     <TextBlock Text="Дата рождения" Margin="0,10"/>
                     <DatePicker Name="BirthDatePicker" Margin="0,5"/>
                     <TextBlock Text="Пол" Margin="0,10"/>
@@ -35,9 +100,13 @@
                         <ComboBoxItem Content="Женский"/>
                     </ComboBox>
                     <TextBlock Text="Логин" Margin="0,10"/>
-                    <TextBox Name="RegisterLoginTextBox" Margin="0,5" Padding="5"/>
+                    <Border BorderBrush="Transparent" BorderThickness="0" CornerRadius="25">
+                        <TextBox Name="RegisterLoginTextBox" Margin="0,5" Padding="10"/>
+                    </Border>
                     <TextBlock Text="Пароль" Margin="0,10"/>
-                    <PasswordBox Name="RegisterPasswordBox" Margin="0,5" Padding="5"/>
+                    <Border BorderBrush="Transparent" BorderThickness="0" CornerRadius="25">
+                        <PasswordBox Name="RegisterPasswordBox" Margin="0,5" Padding="10"/>
+                    </Border>
                     <Button Name="RegisterButton" Content="Зарегистрироваться" Margin="0,20" Background="#00ffc5" Foreground="#002217" Click="RegisterButton_Click"/>
                     <TextBlock HorizontalAlignment="Center">
                         <Hyperlink Click="SwitchToLogin">Есть аккаунт? Войти</Hyperlink>

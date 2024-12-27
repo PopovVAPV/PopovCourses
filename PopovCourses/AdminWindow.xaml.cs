@@ -1,52 +1,162 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PopovCourses
 {
     public partial class AdminWindow : Window
     {
+        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=CoursesBase;Integrated Security=True";
+
         public AdminWindow()
         {
             InitializeComponent();
+            LoadUsersData();
+        }
 
-            // Пример данных пользователей
-            var users = new List<UserAccount>
+        private void LoadUsersData()
+        {
+            try
             {
-                new UserAccount { FullName = "Иван Иванов", Login = "ivanov", Status = "Активен", StatusColor = Brushes.Green },
-                new UserAccount { FullName = "Мария Петрова", Login = "petrova", Status = "Заблокирован", StatusColor = Brushes.Red }
-            };
-
-            // Привязываем список пользователей
-            UsersListBox.ItemsSource = users;
+                List<User> users = new List<User>();
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT UserId, FullName, Login, BirthDate, Gender, IsBlocked FROM Users";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            users.Add(new User
+                            {
+                                UserId = reader.GetInt32(0),
+                                FullName = reader.GetString(1),
+                                Login = reader.GetString(2),
+                                BirthDate = reader.GetDateTime(3),
+                                Gender = reader.GetString(4),
+                                IsBlocked = reader.GetBoolean(5)
+                            });
+                        }
+                    }
+                }
+                UsersDataGrid.ItemsSource = users;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void EditUser_Click(object sender, RoutedEventArgs e)
+        private void BlockUserButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Изменение данных пользователя.");
-            // Логика изменения данных пользователя
+            if (UsersDataGrid.SelectedItem is User selectedUser)
+            {
+                if (selectedUser.IsBlocked)
+                {
+                    MessageBox.Show("Этот пользователь уже заблокирован.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    try
+                    {
+                        using (SqlConnection connection = new SqlConnection(ConnectionString))
+                        {
+                            connection.Open();
+                            string query = "UPDATE Users SET IsBlocked = 1 WHERE UserId = @UserId";
+                            using (SqlCommand command = new SqlCommand(query, connection))
+                            {
+                                command.Parameters.AddWithValue("@UserId", selectedUser.UserId);
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                        MessageBox.Show("Пользователь заблокирован.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadUsersData(); 
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при блокировке пользователя: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите пользователя для блокировки.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
-        private void BlockUser_Click(object sender, RoutedEventArgs e)
+        private void UnblockUserButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Пользователь заблокирован.");
-            // Логика блокировки пользователя
+            if (UsersDataGrid.SelectedItem is User selectedUser)
+            {
+                if (!selectedUser.IsBlocked)
+                {
+                    MessageBox.Show("Этот пользователь не заблокирован.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    try
+                    {
+                        using (SqlConnection connection = new SqlConnection(ConnectionString))
+                        {
+                            connection.Open();
+                            string query = "UPDATE Users SET IsBlocked = 0 WHERE UserId = @UserId";
+                            using (SqlCommand command = new SqlCommand(query, connection))
+                            {
+                                command.Parameters.AddWithValue("@UserId", selectedUser.UserId);
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                        MessageBox.Show("Пользователь разблокирован.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadUsersData(); 
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при разблокировке пользователя: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите пользователя для разблокировки.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
-        private void DeleteUser_Click(object sender, RoutedEventArgs e)
+        private void DeleteUserButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Пользователь удален.");
-            // Логика удаления пользователя
+            if (UsersDataGrid.SelectedItem is User selectedUser)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(ConnectionString))
+                    {
+                        connection.Open();
+                        string query = "DELETE FROM Users WHERE UserId = @UserId";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            command.Parameters.AddWithValue("@UserId", selectedUser.UserId);
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                    MessageBox.Show("Пользователь удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    LoadUsersData(); 
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при удалении пользователя: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите пользователя для удаления.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
+
 }

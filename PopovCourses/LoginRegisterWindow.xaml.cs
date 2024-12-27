@@ -14,7 +14,6 @@ namespace PopovCourses
             InitializeComponent();
         }
 
-        // Логика для входа
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string login = LoginTextBox.Text;
@@ -23,8 +22,26 @@ namespace PopovCourses
             if (IsValidUser(login, password))
             {
                 MessageBox.Show("Вы успешно вошли!");
-                this.DialogResult = true; // Закрытие окна с результатом
-                this.Close();
+
+                if (login == "Admin")
+                {
+                    AdminWindow adminWindow = new AdminWindow();
+                    adminWindow.Show();
+                    this.Close(); 
+                }
+                else
+                {
+                    User currentUser = GetUserData(login); 
+                    MainWindow.SetCurrentUser(currentUser); 
+                    this.DialogResult = true; 
+                    this.Close();
+
+                    if (MainWindow.CurrentUser != null)
+                    {
+                        ProfileWindow profileWindow = new ProfileWindow(currentUser); 
+                        profileWindow.Show();
+                    }
+                }
             }
             else
             {
@@ -32,7 +49,8 @@ namespace PopovCourses
             }
         }
 
-        // Логика для регистрации
+
+
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             string fullName = FullNameTextBox.Text;
@@ -46,8 +64,10 @@ namespace PopovCourses
                 if (RegisterUser(fullName, birthDate.Value, gender, login, password))
                 {
                     MessageBox.Show("Регистрация прошла успешно!");
-                    this.DialogResult = true; // Закрытие окна с результатом
+                    this.DialogResult = true; 
                     this.Close();
+
+
                 }
                 else
                 {
@@ -60,22 +80,26 @@ namespace PopovCourses
             }
         }
 
-        // Проверка данных пользователя (например, из базы данных)
         private bool IsValidUser(string login, string password)
         {
+            if (login == "Admin" && password == "admin")
+            {
+                return true; 
+            }
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     connection.Open();
-                    string query = "SELECT Password FROM Users WHERE Login = @Login AND IsBlocked = 0";
+                    string query = "SELECT Password, IsBlocked FROM Users WHERE Login = @Login AND IsBlocked = 0";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@Login", login);
 
                         string storedPassword = command.ExecuteScalar() as string;
-                        if (storedPassword != null && storedPassword == password) // Сравниваем пароли напрямую
+                        if (storedPassword != null && storedPassword == password)
                         {
                             return true;
                         }
@@ -90,11 +114,10 @@ namespace PopovCourses
             return false;
         }
 
-        // Проверка корректности данных при регистрации
+
         // Проверка корректности данных при регистрации
         private bool IsValidRegistrationData(string fullName, DateTime? birthDate, string gender, string login, string password)
         {
-            // Проверяем, что данные заполнены корректно и выводим информацию, если что-то не так
             if (string.IsNullOrWhiteSpace(fullName))
             {
                 MessageBox.Show("Поле 'ФИО' не может быть пустым.");
@@ -174,6 +197,46 @@ namespace PopovCourses
         {
             TabControl.SelectedIndex = 1;
         }
+
+        // Получение данных о пользователе по логину
+        private User GetUserData(string login)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT UserId, FullName, Login, BirthDate, Gender FROM Users WHERE Login = @Login";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Login", login);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new User
+                                {
+                                    UserId = reader.GetInt32(0),
+                                    FullName = reader.GetString(1),
+                                    Login = reader.GetString(2),
+                                    BirthDate = reader.GetDateTime(3), // Добавьте дату рождения
+                                    Gender = reader.GetString(4) // Добавьте пол
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка получения данных пользователя: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return null;
+        }
+
+
 
         // Переключение на вкладку входа
         private void SwitchToLogin(object sender, RoutedEventArgs e)

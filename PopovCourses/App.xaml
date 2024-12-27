@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:PopovCourses"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <FontFamily x:Key="ComfortaaFont">/Fonts/#Comfortaa</FontFamily>
     </Application.Resources>
 </Application>
