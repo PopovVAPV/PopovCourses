@@ -82,7 +82,7 @@
         </DockPanel>
 
         <ListBox Name="CoursesListBox" Grid.Row="1"
-                 ItemContainerStyle="{StaticResource {x:Type ListBoxItem}}">
+                 ItemContainerStyle="{StaticResource {x:Type ListBoxItem}}" SelectionChanged="CoursesListBox_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="#bdff71" BorderThickness="1" Padding="15" Margin="10" Background="#ffffff">

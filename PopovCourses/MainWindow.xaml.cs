@@ -151,6 +151,7 @@ namespace PopovCourses
                 profileWindow.Show();
             }
         }
+
     }
 
     public class User
